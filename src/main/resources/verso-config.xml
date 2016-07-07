@@ -7,5 +7,14 @@
 		<property name="username">root</property>
 		<property name="password">123456</property>
 	</database>
+	
 	<bean name="userDao" value="dao.UserDao"/>
+	
+	<result-map name="user" type="model.User">
+		<property name="id"/>
+		<property name="name"/>
+		<property name="flag"/>
+		<property name="email"/>
+		<property name="password"/>
+	</result-map>
 </config>

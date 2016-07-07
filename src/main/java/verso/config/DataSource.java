@@ -1,10 +1,10 @@
 package verso.config;
 
 public class DataSource {
-    String url = "jdbc:mysql://localhost:3306/tjg";
+    String url;
     String driverClassName;
-	String username = "root";
-    String password = "123456";
+	String username;
+    String password;
     
 	public String getUrl() {
 		return url;

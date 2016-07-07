@@ -2,9 +2,11 @@ package verso.mapper;
 
 import java.lang.reflect.Method;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Arrays;
+import java.util.List;
 
 import verso.annotation.Operation;
 import verso.session.VSession;
@@ -15,11 +17,16 @@ public class MapperMethod
 	String sqlArray[];
 	SqlCommandType sqlType;
 	VSession session;
+	
+	boolean isList = false;
 	  	
 	public MapperMethod(Method method, VSession session) {
 		Operation opt = method.getAnnotation(Operation.class);
 		this.sqlType = SqlCommandType.UNKNOWN;
 		if (opt == null) return;
+		
+		Class<?> returnType = method.getReturnType();
+		isList = returnType == List.class;
 		
 		this.session = session;
 		this.sql = opt.value();
@@ -43,17 +50,8 @@ public class MapperMethod
 			System.out.println("[Commit transaction]");
 			break;
 		case SELECT:
-			try {
-				Statement stmt = session.createStatement();
-				ResultSet rs = stmt.executeQuery(sql);
-				while (rs.next()) {
-					System.out.println(rs.getString("email"));
-				}
-			}
-			catch (SQLException e) {
-				e.printStackTrace();
-			}
-			System.out.println(Arrays.toString(sqlArray));
+			if (isList) 
+				return session.select(sql);
 			break;
 		case FLUSH:
 			//result = sqlSession.flushStatements();
