@@ -9,6 +9,7 @@
 	</database>
 	
 	<bean name="userDao" value="dao.UserDao"/>
+	<bean name="bookDao" value="dao.BookDao"/>
 	
 	<result-map name="user" type="model.User">
 		<property name="id"/>
@@ -16,5 +17,13 @@
 		<property name="flag"/>
 		<property name="email"/>
 		<property name="password"/>
+	</result-map>
+
+	<result-map name="book" type="model.Book">
+		<property name="id"/>
+		<property name="name"/>
+		<property name="comment"/>
+		<property name="finishTime"/>
+		<property name="author" value="authorId"/>
 	</result-map>
 </config>

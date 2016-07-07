@@ -6,12 +6,13 @@ import verso.annotation.Operation;
 import model.User;
 
 public interface UserDao {
-	@Operation("insert into user where id=#id")
 	void insert(User t);
 	void update(User t);
-	@Operation("select * from user")
+	@Operation(sql="select * from user", result="user")
 	List<User> display();
-	@Operation("test somthing")
 	User findByFlag(String flag);
 	User findByEmail(String email);
+	
+	@Operation(sql="flush", result="void")
+	void test();
 }

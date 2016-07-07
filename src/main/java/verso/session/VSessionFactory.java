@@ -2,7 +2,6 @@ package verso.session;
 
 import java.io.IOException;
 
-import dao.UserDao;
 import verso.config.Environment;
 import verso.config.XMLConfigBuilder;
 

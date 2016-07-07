@@ -4,22 +4,22 @@ import java.sql.Date;
 
 public class Book {
 	Integer id;
-	Person author;
+	Integer authorId;
 	String name;
 	String comment;
 	Date finishTime;
-	
-	public Person getAuthor() {
-		return author;
-	}
-	public void setAuthor(Person author) {
-		this.author = author;
-	}
+		
 	public Integer getId() {
 		return id;
 	}
 	public void setId(Integer id) {
 		this.id = id;
+	}
+	public Integer getAuthorId() {
+		return authorId;
+	}
+	public void setAuthorId(Integer authorId) {
+		this.authorId = authorId;
 	}
 	public String getName() {
 		return name;

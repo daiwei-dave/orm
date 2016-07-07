@@ -79,7 +79,7 @@ public class XMLConfigBuilder
 				mapper.put(pKey, field);
 			} catch (NoSuchFieldException e) {
 				throw new Exception(String.format(
-						"[result-map]: <property> %s has no such method %s", type, pValue));
+						"[result-map]: <property> %s has no such field %s", type, pValue));
 			}			
 		}
 		config.putResult(key, mapper);

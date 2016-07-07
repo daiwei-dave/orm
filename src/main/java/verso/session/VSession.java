@@ -11,7 +11,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+import verso.annotation.Operation;
 import verso.config.DataSource;
 import verso.config.Environment;
 import verso.config.ResultMapper;
@@ -71,11 +74,27 @@ public class VSession
 		return cache.get(name);
 	}
 	
-	public Object select(String sql) 
-	{
+	public Object select(Operation anno, Object[] args, Class<?> returnType) 
+	{		
 		try {
-			ResultMapper mapper = env.getResult("user");
-			List<Object> ans = new ArrayList<>();
+			String sql = anno.sql();
+	        Pattern p = Pattern.compile("\\{[0-9]+\\}");        
+	        Matcher m = p.matcher(sql);
+	        if (m.find()) {
+	        	StringBuffer sb = new StringBuffer();
+	        	while (true) {
+	        		String s = m.group();
+	        		Object arg = args[Integer.valueOf(s.substring(1, s.length()-1))];
+	        		// 补上字符串的标识
+	        		if (arg instanceof String) arg = "'"+arg+"'";
+	        		m.appendReplacement(sb, arg.toString());
+	        		if (!m.find()) break;
+	        	}
+	        	sql = sb.toString();
+	        }
+	        System.out.println(sql);
+
+			ResultMapper mapper = env.getResult(anno.result());
 			
 			Statement stmt = createStatement();
 			ResultSet rs = stmt.executeQuery(sql);
@@ -83,23 +102,59 @@ public class VSession
 			
 			List<String> columns = new ArrayList<>();
 			for (int i=1; i<=rsmd.getColumnCount(); i++) {
-				String name = rsmd.getColumnName(i);
+				String name = rsmd.getColumnLabel(i);
 				if (mapper.get(name) != null) columns.add(name);
 			}
-			
-			while (rs.next()) {
-				Object obj = mapper.getClassInstance();
-				for (String name : columns) {
-					Field field = mapper.get(name);					
-					field.setAccessible(true);
-					field.set(obj, rs.getObject(name));
+			if (returnType == List.class || returnType.isArray()) {
+				List<Object> ans = new ArrayList<>();
+				while (rs.next()) {
+					Object obj = mapper.getClassInstance();
+					for (String name : columns) {
+						Field field = mapper.get(name);	
+						field.setAccessible(true);
+						field.set(obj, rs.getObject(name));
+					}
+					ans.add(obj);
 				}
-				ans.add(obj);
+				if (returnType.isArray()) return ans.toArray();
+				return ans;
+			} else {
+				while (rs.next()) {
+					Object obj = mapper.getClassInstance();
+					for (String name : columns) {
+						Field field = mapper.get(name);					
+						field.setAccessible(true);
+						field.set(obj, rs.getObject(name));
+					}
+					return obj;
+				}
+				return null;
 			}
-			return ans;
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;
 		} 
+	}
+	
+	public void test() {
+		try {
+			Statement stmt = createStatement();
+			ResultSet rs = stmt.executeQuery("select p.id as author, p.name from book left join person p on book.author=p.id");			
+			ResultSetMetaData rsmd = rs.getMetaData();
+			/*
+			 * column name 表上的列名
+			 * column label 表上的列名或as的别名
+			 */
+			while (rs.next()) {
+				for (int i=1; i<=rsmd.getColumnCount(); i++) {
+					String name = rsmd.getColumnLabel(i);
+				}
+				System.out.println("-----------------------------");
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 }
