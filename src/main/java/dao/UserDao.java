@@ -2,17 +2,17 @@ package dao;
 
 import java.util.List;
 
+import pojo.User;
 import verso.annotation.Operation;
-import model.User;
 
 public interface UserDao {
-	void insert(User t);
+	@Operation(sql="insert in user (name, password) values({0}, {1})", result="void")
+	void insert(String name, String password);
 	void update(User t);
 	@Operation(sql="select * from user", result="user")
 	List<User> display();
 	User findByFlag(String flag);
 	User findByEmail(String email);
-	
 	@Operation(sql="flush", result="void")
 	void test();
 }

@@ -31,17 +31,14 @@ public class MapperMethod
 		}
 	}
 	
-	public Object invoke(Object args[]) {
+	public Object invoke(Object args[]) throws Exception {
 		System.out.println("invoke : " + anno.sql());
 		System.out.println("args : " + Arrays.toString(args));
 
 		System.out.println(sqlType);
 		switch (sqlType) {
 		case INSERT: case UPDATE: case DELETE:
-			System.out.println("[Begin transaction]");
-			System.out.println(anno.sql());
-			System.out.println("[Commit transaction]");
-			break;
+			return session.other(anno, args, returnType);
 		case SELECT:
 			return session.select(anno, args, returnType);
 		case FLUSH:

@@ -1,6 +1,6 @@
 package dao;
 
-import model.Book;
+import pojo.Book;
 import verso.annotation.Operation;
 
 public interface BookDao {

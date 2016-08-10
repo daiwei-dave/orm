@@ -11,7 +11,7 @@
 	<bean name="userDao" value="dao.UserDao"/>
 	<bean name="bookDao" value="dao.BookDao"/>
 	
-	<result-map name="user" type="model.User">
+	<result-map name="user" type="pojo.User">
 		<property name="id"/>
 		<property name="name"/>
 		<property name="flag"/>
@@ -19,7 +19,7 @@
 		<property name="password"/>
 	</result-map>
 
-	<result-map name="book" type="model.Book">
+	<result-map name="book" type="pojo.Book">
 		<property name="id"/>
 		<property name="name"/>
 		<property name="comment"/>

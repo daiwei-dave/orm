@@ -1,4 +1,4 @@
-package model;
+package pojo;
 
 import java.sql.Date;
 
