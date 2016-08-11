@@ -32,10 +32,10 @@ public class MapperMethod
 	}
 	
 	public Object invoke(Object args[]) throws Exception {
-		System.out.println("invoke : " + anno.sql());
-		System.out.println("args : " + Arrays.toString(args));
+		//System.out.println("invoke : " + anno.sql());
+		//System.out.println("args : " + Arrays.toString(args));
 
-		System.out.println(sqlType);
+		//System.out.println(sqlType);
 		switch (sqlType) {
 		case INSERT: case UPDATE: case DELETE:
 			return session.other(anno, args, returnType);

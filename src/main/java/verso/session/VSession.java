@@ -3,6 +3,7 @@ package verso.session;
 import java.lang.reflect.Field;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
@@ -11,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -28,13 +30,26 @@ public class VSession {
 
 	public VSession(Environment env) {
 		this.env = env;
-		try {
-			DataSource data = env.getDataSource();
-			conn = DriverManager.getConnection(data.getUrl(),
-					data.getUsername(), data.getPassword());
-			conn.setAutoCommit(false);// 禁止自动提交，设置回滚点
-		} catch (SQLException e) {
-			System.err.println(e);
+		
+		DataSource data = env.getDataSource();
+		while (true) {
+			try {
+				conn = DriverManager.getConnection(data.getUrl(),
+						data.getUsername(), data.getPassword());
+				if (conn == null) {
+					throw new SQLException();
+				} else {
+					conn.setAutoCommit(false);// 禁止自动提交，设置回滚点
+					break;	//成功则结束循环
+				}
+			} catch (SQLException e) {
+				try {
+					//出现异常，睡一定时间后重连数据库
+					TimeUnit.MILLISECONDS.sleep(100);
+				} catch (InterruptedException ie) {
+					ie.printStackTrace();
+				}
+			}
 		}
 	}
 
@@ -44,16 +59,6 @@ public class VSession {
 		} catch (SQLException e) {
 			System.err.println(e);
 		}
-	}
-
-	public Statement createStatement() {
-		try {
-			if (conn != null)
-				return conn.createStatement();
-		} catch (SQLException e) {
-			System.err.println(e);
-		}
-		return null;
 	}
 
 	public void finish() {
@@ -95,11 +100,10 @@ public class VSession {
 			}
 			sql = sb.toString();
 		}
-		System.out.println(sql);
 
 		ResultMapper mapper = env.getResult(anno.result());
 
-		Statement stmt = createStatement();
+		Statement stmt = conn.createStatement();
 		ResultSet rs = stmt.executeQuery(sql);
 		ResultSetMetaData rsmd = rs.getMetaData();
 
@@ -157,19 +161,20 @@ public class VSession {
 			}
 			sql = m.appendTail(sb).toString();
 		}
-		System.out.println(sql);
+		System.err.println(sql);
 
 		ResultMapper mapper = env.getResult(anno.result());
-
-		Statement stmt = createStatement();
-		Integer result = stmt.executeUpdate(sql);
+		//PreparedStatement stmt = conn.prepareStatement(sql);
+		
+		PreparedStatement stmt = conn.prepareStatement(sql);
+		Integer result = stmt.executeUpdate();
 		System.out.println(result);
 		return result;
 	}
 
 	public void test() {
 		try {
-			Statement stmt = createStatement();
+			Statement stmt = conn.createStatement();
 			ResultSet rs = stmt
 					.executeQuery("select p.id as author, p.name from book left join person p on book.author=p.id");
 			ResultSetMetaData rsmd = rs.getMetaData();
