@@ -9,6 +9,9 @@ import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 
 import verso.io.ClassLoaderWrapper;
+import verso.mapper.MappedResult;
+import verso.mapper.impl.MappedBeanResult;
+import verso.mapper.impl.MappedPrimitiveResult;
 
 /**
  * @author JingGe Tang
@@ -64,7 +67,7 @@ public class XMLConfigBuilder
 			throw new Exception("[result-map]: should contain name and type");
 		// 通过反射找到具体类，构建ResultMapper
 		Class<?> clazz = loader.loadClass(type);
-		ResultMapper mapper = new ResultMapper(clazz);
+		MappedBeanResult mapper = new MappedBeanResult(clazz);
 		// 映射数据库表属性与类属性
 		for (Object item : node.elements("property")) {
 			Element i = (Element) item;
@@ -83,6 +86,17 @@ public class XMLConfigBuilder
 			}			
 		}
 		config.putResult(key, mapper);
+		// 暂且这样吧
+		MappedResult primResult = new MappedPrimitiveResult(); 
+		config.putResult("string", primResult);
+		config.putResult("byte", primResult);
+		config.putResult("short", primResult);
+		config.putResult("int", primResult);
+		config.putResult("long", primResult);
+		config.putResult("double", primResult);
+		config.putResult("float", primResult);
+		config.putResult("bool", primResult);
+		config.putResult("char", primResult);
 	}
 	
 	public static void evalDataSource(Element node) throws Exception {

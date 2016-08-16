@@ -5,10 +5,9 @@ import java.lang.annotation.Target;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.ElementType;
 
-
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
 public @interface Operation {
-	String sql();
-	String result();
+	String value();
+	String result() default "int";
 }

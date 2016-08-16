@@ -6,13 +6,18 @@ import pojo.User;
 import verso.annotation.Operation;
 
 public interface UserDao {
-	@Operation(sql="insert into user (name, password) values({0}, {1})", result="void")
-	void insert(String name, String password);
+	@Operation("insert into user (name, password, email) values({name}, {password}, {email})")
+	void insert(User user);
+	@Operation("update user set name={name}, password={password}, email={email}, flag={flag} where id={id}")
 	void update(User t);
-	@Operation(sql="select * from user", result="user")
+	@Operation(value="select * from user", result="user")
 	List<User> display();
-	User findByFlag(String flag);
-	User findByEmail(String email);
-	@Operation(sql="flush", result="void")
+	
+	@Operation(value="select * from user where name={0}", result="user")
+	User getByName(String name);
+	@Operation(value="select name from user where flag={0}", result="string")
+	String getNameByFlag(String flag);
+	
+	@Operation("flush")
 	void test();
 }

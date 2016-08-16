@@ -1,6 +1,5 @@
 package verso.session;
 
-import java.lang.reflect.Field;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -8,23 +7,20 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-import verso.annotation.Operation;
 import verso.config.DataSource;
 import verso.config.Environment;
-import verso.config.ResultMapper;
-import verso.mapper.MapperProxy;
+import verso.mapper.MappedProxy;
+import verso.mapper.MappedResult;
+import verso.mapper.MappedStatement;
+import verso.mapper.impl.MappedBeanResult;
 
 public class VSession {
 	private Environment env;
-	Map<String, Object> cache = new ConcurrentHashMap<String, Object>();
+	Map<String, Object> cache = new HashMap<String, Object>();
 
 	private Connection conn = null;
 
@@ -73,103 +69,32 @@ public class VSession {
 	}
 
 	public Object getBean(String name) {
-		if (!cache.containsKey(name)) {
-			Class<?> clazz = env.getDao(name);
-			cache.put(name, MapperProxy.newInstance(clazz, this));
+		if (!cache.containsKey(name)) synchronized(cache) {
+			if (!cache.containsKey(name)) {
+				Class<?> clazz = env.getDao(name);
+				cache.put(name, MappedProxy.newInstance(clazz, this));
+			}
 		}
 		return cache.get(name);
 	}
 
-	public Object select(Operation anno, Object[] args, Class<?> returnType)
+	public Object select(MappedStatement mappedStmt, Object[] args)
 			throws Exception {
-		String sql = anno.sql();
-		Pattern p = Pattern.compile("\\{[0-9]+\\}");
-		Matcher m = p.matcher(sql);
-		if (m.find()) {
-			StringBuffer sb = new StringBuffer();
-			while (true) {
-				String s = m.group();
-				Object arg = args[Integer
-						.valueOf(s.substring(1, s.length() - 1))];
-				// 补上字符串的标识
-				if (arg instanceof String)
-					arg = "'" + arg + "'";
-				m.appendReplacement(sb, arg.toString());
-				if (!m.find())
-					break;
-			}
-			sql = sb.toString();
-		}
-
-		ResultMapper mapper = env.getResult(anno.result());
-
-		Statement stmt = conn.createStatement();
-		ResultSet rs = stmt.executeQuery(sql);
-		ResultSetMetaData rsmd = rs.getMetaData();
-
-		List<String> columns = new ArrayList<>();
-		for (int i = 1; i <= rsmd.getColumnCount(); i++) {
-			String name = rsmd.getColumnLabel(i);
-			if (mapper.get(name) != null)
-				columns.add(name);
-		}
-		if (returnType == List.class || returnType.isArray()) {
-			List<Object> ans = new ArrayList<>();
-			while (rs.next()) {
-				Object obj = mapper.getClassInstance();
-				for (String name : columns) {
-					Field field = mapper.get(name);
-					field.setAccessible(true);
-					field.set(obj, rs.getObject(name));
-				}
-				ans.add(obj);
-			}
-			if (returnType.isArray())
-				return ans.toArray();
-			return ans;
-		} else {
-			while (rs.next()) {
-				Object obj = mapper.getClassInstance();
-				for (String name : columns) {
-					Field field = mapper.get(name);
-					field.setAccessible(true);
-					field.set(obj, rs.getObject(name));
-				}
-				return obj;
-			}
-			return null;
-		}
+		// 获取配置好参数的sql
+		PreparedStatement stmt = mappedStmt.createStatement(conn, args);
+		ResultSet rs = stmt.executeQuery();
+		// 奖ResultSet转为注解指定的resultType类型，存入函数的返回值returnType类型
+		String resultType = mappedStmt.getResultType();
+		Class<?> returnType = mappedStmt.getReturnType();
+		MappedResult mapper = env.getResult(resultType);
+		return mapper.getResult(rs, returnType);
 	}
 
-	public Object other(Operation anno, Object[] args, Class<?> returnType)
-			throws Exception {
-		String sql = anno.sql();
-		Pattern p = Pattern.compile("\\{[0-9]+\\}");
-		Matcher m = p.matcher(sql);
-		if (m.find()) {
-			StringBuffer sb = new StringBuffer();
-			while (true) {
-				String s = m.group();
-				Object arg = args[Integer
-						.valueOf(s.substring(1, s.length() - 1))];
-				// 补上字符串的标识
-				if (arg instanceof String)
-					arg = "'" + arg + "'";
-				m.appendReplacement(sb, arg.toString());
-				if (!m.find())
-					break;
-			}
-			sql = m.appendTail(sb).toString();
-		}
-		System.err.println(sql);
-
-		ResultMapper mapper = env.getResult(anno.result());
-		//PreparedStatement stmt = conn.prepareStatement(sql);
-		
-		PreparedStatement stmt = conn.prepareStatement(sql);
-		Integer result = stmt.executeUpdate();
-		System.out.println(result);
-		return result;
+	public Object other(MappedStatement mappedStmt, Object[] args)
+			throws Exception 
+	{
+		PreparedStatement stmt = mappedStmt.createStatement(conn, args);
+		return stmt.executeUpdate();
 	}
 
 	public void test() {
