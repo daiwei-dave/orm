@@ -14,7 +14,8 @@ import verso.mapper.impl.MappedBeanResult;
 import verso.mapper.impl.MappedPrimitiveResult;
 
 /**
- * @author JingGe Tang
+ * 读取与解析配置信息，并返回处理后的Environment
+ * @author tjg
  */
 public class XMLConfigBuilder 
 {

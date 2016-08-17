@@ -8,8 +8,8 @@ import java.lang.reflect.Field;
  */
 public class ParamParser {
 	private String levels[];
-	private Field fields[];
-	private Class<?> clazz = null;
+	volatile private Field fields[];
+	volatile private Class<?> clazz;
 	
 	public ParamParser(String param) throws Exception {
 		if (!param.startsWith("{") || !param.endsWith("}")) {
@@ -37,7 +37,7 @@ public class ParamParser {
 			arg = args[0];
 		}
 		// 第一次调用某方法时的初始化，由于并发所以同步一下
-		if (fields == null) synchronized(this) {
+		/*if (fields == null) synchronized(this) {
 			if (fields == null) {
 				fields = new Field[levels.length];
 				clazz = arg.getClass();
@@ -54,14 +54,17 @@ public class ParamParser {
 				}
 				return arg;
 			}
-		}
-		
+		}*/
+
 		// 如果与前次是同一个类，则使用fields的缓存
-		boolean flag = clazz == arg.getClass();
+		//boolean flag = clazz == arg.getClass();
 		for (; index < levels.length; index++) {
-			if (flag) { 
+/*			if (flag) { 
+				if (fields[index] == null) {
+					index--; continue;
+				}
 				arg = fields[index].get(arg);
-			} else {
+			} else {*/
 				// getDeclaredField : can get private field
 				String name = levels[index];
 				Field field = arg.getClass().getDeclaredField(name);
@@ -70,7 +73,7 @@ public class ParamParser {
 				}
 				arg = field.get(arg);
 			}
-		}
+		//}
 		return arg;
 	}
 }

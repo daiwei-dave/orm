@@ -1,5 +1,9 @@
 package verso.config;
 
+/**
+ * 数据库信息
+ * @author tjg
+ */
 public class DataSource {
     String url;
     String driverClassName;

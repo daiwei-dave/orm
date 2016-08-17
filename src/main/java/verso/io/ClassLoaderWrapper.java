@@ -3,11 +3,13 @@ package verso.io;
 import java.io.IOException;
 import java.io.InputStream;
 
+/**
+ * 通过多种ClassLoader尝试读取，提高改进空间
+ * @author tjg
+ *
+ */
 public class ClassLoaderWrapper 
 {
-	/**
-	 * 多种ClassLoader，后续可改进
-	 */
 	private final ClassLoader cl[] = {
 		ClassLoader.getSystemClassLoader(),
 		Thread.currentThread().getContextClassLoader(),

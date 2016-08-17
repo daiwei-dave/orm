@@ -5,6 +5,10 @@ import java.util.Map;
 
 import verso.mapper.MappedResult;
 
+/**
+ * 存有配置信息中的dao方法与resultMap（同MyBatis）以及DataSource
+ * @author tjg
+ */
 public class Environment {
 	
 	private DataSource data;

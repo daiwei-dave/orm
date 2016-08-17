@@ -16,17 +16,15 @@ import verso.config.Environment;
 import verso.mapper.MappedProxy;
 import verso.mapper.MappedResult;
 import verso.mapper.MappedStatement;
-import verso.mapper.impl.MappedBeanResult;
 
 public class VSession {
 	private Environment env;
 	Map<String, Object> cache = new HashMap<String, Object>();
 
 	private Connection conn = null;
-
+	
 	public VSession(Environment env) {
 		this.env = env;
-		
 		DataSource data = env.getDataSource();
 		while (true) {
 			try {
@@ -63,6 +61,7 @@ public class VSession {
 		try {
 			conn.commit(); // 事务提交
 			conn.close();
+			cache.clear();
 		} catch (SQLException e) {
 			System.err.println(e);
 		}
@@ -81,20 +80,33 @@ public class VSession {
 	public Object select(MappedStatement mappedStmt, Object[] args)
 			throws Exception {
 		// 获取配置好参数的sql
-		PreparedStatement stmt = mappedStmt.createStatement(conn, args);
-		ResultSet rs = stmt.executeQuery();
-		// 奖ResultSet转为注解指定的resultType类型，存入函数的返回值returnType类型
-		String resultType = mappedStmt.getResultType();
-		Class<?> returnType = mappedStmt.getReturnType();
-		MappedResult mapper = env.getResult(resultType);
-		return mapper.getResult(rs, returnType);
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		try {
+			stmt	 = mappedStmt.createStatement(conn, args);
+			rs = stmt.executeQuery();
+			// 奖ResultSet转为注解指定的resultType类型，存入函数的返回值returnType类型
+			String resultType = mappedStmt.getResultType();
+			Class<?> returnType = mappedStmt.getReturnType();
+			MappedResult mapper = env.getResult(resultType);
+			return mapper.getResult(rs, returnType);
+		} finally {
+			if (rs != null) rs.close();
+			if (stmt != null) stmt.close();
+		}
 	}
 
 	public Object other(MappedStatement mappedStmt, Object[] args)
 			throws Exception 
 	{
-		PreparedStatement stmt = mappedStmt.createStatement(conn, args);
-		return stmt.executeUpdate();
+		PreparedStatement stmt = null;
+		try {
+			stmt = mappedStmt.createStatement(conn, args);
+			return stmt.executeUpdate();
+		} finally {
+			if (stmt != null) stmt.close();
+		}
+		
 	}
 
 	public void test() {
@@ -109,6 +121,7 @@ public class VSession {
 			while (rs.next()) {
 				for (int i = 1; i <= rsmd.getColumnCount(); i++) {
 					String name = rsmd.getColumnLabel(i);
+					System.out.println(name);
 				}
 				System.out.println("-----------------------------");
 			}

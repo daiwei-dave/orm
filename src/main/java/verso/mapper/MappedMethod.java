@@ -9,7 +9,7 @@ public class MappedMethod
 	Method method;
 	VSession session;
 	MappedStatement stmt;
-	  	
+
 	public MappedMethod(Method method, VSession session) throws Exception {
 		this.method = method;
 		this.stmt = MappedStatement.getInstance(method);
