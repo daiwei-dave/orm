@@ -1,7 +1,4 @@
 package com.github.basic.session;
-
-
-
 import com.github.basic.config.XMLConfigBuilder;
 
 import javax.sql.DataSource;
