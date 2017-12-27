@@ -1,6 +1,6 @@
-package com.github.verso.config;
+package com.github.basic.config;
 
-import com.github.verso.VDataSource;
+import com.github.basic.VDataSource;
 import org.dom4j.Document;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;

@@ -1,8 +1,8 @@
-package com.github.verso.session;
+package com.github.basic.session;
 
 
 
-import com.github.verso.config.XMLConfigBuilder;
+import com.github.basic.config.XMLConfigBuilder;
 
 import javax.sql.DataSource;
 
@@ -14,6 +14,7 @@ public class VSessionFactory implements SessionFactory {
 		config = XMLConfigBuilder.build(resource);
 	}
 	
+	@Override
 	public VSession openSession() {
 		return new VSession(config);
 	}

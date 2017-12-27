@@ -1,4 +1,4 @@
-package com.github.verso;
+package com.github.basic;
 
 import javax.sql.DataSource;
 import java.io.PrintWriter;

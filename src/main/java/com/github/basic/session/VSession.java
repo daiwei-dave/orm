@@ -1,4 +1,6 @@
-package com.github.verso.session;
+package com.github.basic.session;
+
+import com.github.basic.maper.MapperProxy;
 
 import javax.sql.DataSource;
 import java.sql.*;
@@ -39,5 +41,10 @@ public class VSession implements Session {
 			if (stmt != null) stmt.close();
 		}
     }
-    
+
+	@Override
+	public <T> T getMapper(Class<T> clazz) {
+		return MapperProxy.newInstance(clazz, this);
+	}
+
 }
