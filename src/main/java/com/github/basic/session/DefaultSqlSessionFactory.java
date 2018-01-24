@@ -5,7 +5,7 @@ import com.github.basic.config.XMLConfigBuilder;
 
 import javax.sql.DataSource;
 
-public class VSessionFactory implements SessionFactory {
+public class DefaultSqlSessionFactory implements SqlSessionFactory {
 
     private DataSource config;
 
@@ -15,16 +15,16 @@ public class VSessionFactory implements SessionFactory {
 	private Environment environment;
 
 
-	public VSessionFactory() {
+	public DefaultSqlSessionFactory() {
 	}
 
-	public VSessionFactory(String resource) {
+	public DefaultSqlSessionFactory(String resource) {
 		config = XMLConfigBuilder.build(resource);
 	}
 	
 	@Override
-	public VSession openSession() {
-		return new VSession(environment);
+	public DefaultSqlSession openSession() {
+		return new DefaultSqlSession(environment);
 	}
 
 	@Override

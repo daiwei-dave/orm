@@ -7,7 +7,7 @@ import java.lang.annotation.Target;
 
 /**
  * 注解于dao层方法上
- * @author tjg
+ * @author daiwei
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)

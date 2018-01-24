@@ -6,10 +6,10 @@ import org.springframework.beans.factory.FactoryBean;
 
 import javax.sql.DataSource;
 
-public class VSessionFactoryBean implements FactoryBean<VSessionFactory> {
+public class DefaultSqlSessionFactoryBean implements FactoryBean<DefaultSqlSessionFactory> {
 
     private DataSource dataSource;
-    private VSessionFactory sessionFactory;
+    private DefaultSqlSessionFactory defaultSqlSessionFactory;
 
     /**
      * 获取VSessionFactory实例
@@ -17,18 +17,18 @@ public class VSessionFactoryBean implements FactoryBean<VSessionFactory> {
      * @throws Exception
      */
     @Override
-    public VSessionFactory getObject() throws Exception {
-        if (sessionFactory != null) return sessionFactory;
-        sessionFactory = new VSessionFactory();
+    public DefaultSqlSessionFactory getObject() throws Exception {
+        if (defaultSqlSessionFactory != null) return defaultSqlSessionFactory;
+        defaultSqlSessionFactory = new DefaultSqlSessionFactory();
         Environment environment = new Environment();
         environment.setDataSource(dataSource);
-        sessionFactory.setEnvironment(environment);
-        return sessionFactory;
+        defaultSqlSessionFactory.setEnvironment(environment);
+        return defaultSqlSessionFactory;
     }
 
     @Override
     public Class<?> getObjectType() {
-        return VSessionFactory.class;
+        return DefaultSqlSessionFactory.class;
     }
 
     @Override

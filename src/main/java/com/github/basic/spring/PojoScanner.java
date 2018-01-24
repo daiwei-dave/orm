@@ -2,11 +2,10 @@ package com.github.basic.spring;
 
 import com.github.basic.annotation.Column;
 import com.github.basic.annotation.Table;
-import com.github.basic.config.Configuration;
 import com.github.basic.config.Environment;
 import com.github.basic.maper.impl.MappedBeanResult;
 
-import com.github.basic.session.VSessionFactory;
+import com.github.basic.session.DefaultSqlSessionFactory;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.context.annotation.ClassPathBeanDefinitionScanner;
@@ -24,7 +23,7 @@ import java.util.Set;
  */
 public class PojoScanner extends ClassPathBeanDefinitionScanner{
 
-    private VSessionFactory sessionFactory;
+    private DefaultSqlSessionFactory sessionFactory;
 
     public PojoScanner(BeanDefinitionRegistry registry) {
         super(registry, false);
@@ -77,11 +76,11 @@ public class PojoScanner extends ClassPathBeanDefinitionScanner{
     }
 
 
-    public VSessionFactory getSessionFactory() {
+    public DefaultSqlSessionFactory getSessionFactory() {
         return sessionFactory;
     }
 
-    public void setSessionFactory(VSessionFactory sessionFactory) {
+    public void setSessionFactory(DefaultSqlSessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
     }
 }

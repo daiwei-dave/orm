@@ -1,6 +1,6 @@
 package com.github.basic.spring;
 
-import com.github.basic.session.VSessionFactory;
+import com.github.basic.session.DefaultSqlSessionFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
@@ -8,33 +8,32 @@ import org.springframework.beans.factory.support.BeanDefinitionRegistryPostProce
 
 
 /**
- * bean扫描初始化
+ * javabean扫描
  */
 public class BaseConfigurer implements BeanDefinitionRegistryPostProcessor {
 
 
     private String pojoPackage;
-    private VSessionFactory sessionFactory;
+    private DefaultSqlSessionFactory sqlSessionFactory;
 
 
     public void setPojoPackage(String basePackage) {
         this.pojoPackage = basePackage;
     }
-    public void setSessionFactory(VSessionFactory sessionFactory) {
-        this.sessionFactory = sessionFactory;
+    public void setSqlSessionFactory(DefaultSqlSessionFactory sqlSessionFactory) {
+        this.sqlSessionFactory = sqlSessionFactory;
     }
     
     @Override
     public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
-        // TODO Auto-generated method stub
-        
+
     }
 
     @Override
     public void postProcessBeanDefinitionRegistry(BeanDefinitionRegistry registry) throws BeansException {
 
         PojoScanner pojoScanner = new PojoScanner(registry);
-        pojoScanner.setSessionFactory(sessionFactory);
+        pojoScanner.setSessionFactory(sqlSessionFactory);
         pojoScanner.registerFilters();
         pojoScanner.scan(pojoPackage);
     }

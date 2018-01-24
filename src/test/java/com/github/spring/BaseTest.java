@@ -1,6 +1,6 @@
 package com.github.spring;
 
-import com.github.basic.session.VSessionFactory;
+import com.github.basic.session.DefaultSqlSessionFactory;
 
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -13,6 +13,6 @@ public class BaseTest {
     
 	public static void main(String args[]) {
 		System.out.println("start init");
-		VSessionFactory sessionFactory = (VSessionFactory) factory.getBean("sessionFactory");
+		DefaultSqlSessionFactory sessionFactory = (DefaultSqlSessionFactory) factory.getBean("sessionFactory");
 	}
 }

@@ -9,18 +9,18 @@ import com.github.basic.maper.MapperProxy;
 import javax.sql.DataSource;
 import java.sql.*;
 
-public class VSession implements SqlSession {
+public class DefaultSqlSession implements SqlSession {
 
 	private Configuration configuration;
     private DataSource dataSource;
     private Connection conn;
 	private Environment environment;
     
-    public VSession(DataSource dataSource) {
+    public DefaultSqlSession(DataSource dataSource) {
         this.dataSource = dataSource;
     }
 
-	public VSession(Environment environment) {
+	public DefaultSqlSession(Environment environment) {
 		this.environment = environment;
 	}
     

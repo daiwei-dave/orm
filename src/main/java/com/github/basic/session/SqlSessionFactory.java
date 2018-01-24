@@ -10,7 +10,7 @@ import com.github.basic.config.Environment;
  *      2.创建一个session
  * </P>
  */
-public interface SessionFactory {
+public interface SqlSessionFactory {
     /**
      *开启一个SqlSession回话
      * @return
