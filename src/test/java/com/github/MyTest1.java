@@ -20,6 +20,10 @@ public class MyTest1 {
     private static String driverClassName = "com.mysql.jdbc.Driver";
     private static String url = "jdbc:mysql://localhost:3306/orm?useUnicode=true&characterEncoding=utf8";
 
+    /**
+     * 不通过xml配置文件加载数据源
+     * @throws Exception
+     */
     @Test
     public  void test1() throws Exception {
         DataSource data = new VDataSource(driverClassName, url, "root", "123456");
