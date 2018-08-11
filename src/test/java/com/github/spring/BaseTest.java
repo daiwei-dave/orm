@@ -12,7 +12,8 @@ public class BaseTest {
 	private static BeanFactory factory = new ClassPathXmlApplicationContext("classpath:applicationContext.xml");
     
 	public static void main(String args[]) {
-		System.out.println("start init");
+		System.out.println("init start");
 		DefaultSqlSessionFactory sessionFactory = (DefaultSqlSessionFactory) factory.getBean("sessionFactory");
+		System.out.println("init end");
 	}
 }
