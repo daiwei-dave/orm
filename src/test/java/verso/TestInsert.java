@@ -5,6 +5,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.junit.Test;
 import pojo.Book;
 import pojo.User;
 import dao.BookDao;
@@ -76,5 +77,27 @@ public class TestInsert
 		
 		long endTime = System.currentTimeMillis();
 		System.out.printf("total ms: %d\n", endTime - startTime);
+	}
+
+	/**
+	 *insert
+	 * @throws Exception
+	 */
+	@Test
+	public  void testInsert() throws Exception {
+		VSession session = factory.openSession();
+		try {
+			UserDao dao = (UserDao) session.getBean("userDao");
+			User user = new User();
+			user.setName("test");
+			user.setPassword("password");
+			user.setEmail("test@verso.com");
+			dao.insert(user);
+		} catch (Throwable e) {
+			e.printStackTrace();
+			session.rollback();
+		} finally {
+			session.finish();
+		}
 	}
 }
