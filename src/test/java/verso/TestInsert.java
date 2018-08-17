@@ -88,16 +88,24 @@ public class TestInsert
 		VSession session = factory.openSession();
 		try {
 			UserDao dao = (UserDao) session.getBean("userDao");
+
 			User user = new User();
 			user.setName("test");
 			user.setPassword("password");
 			user.setEmail("test@verso.com");
 			dao.insert(user);
+
+
+
+			User user2 = new User();
+			user2.setName("test");
+			user2.setPassword("password123456");
+			user2.setEmail("test@verso.com");
+			dao.insert(user2);
+			session.finish();
 		} catch (Throwable e) {
 			e.printStackTrace();
 			session.rollback();
-		} finally {
-			session.finish();
 		}
 	}
 }
