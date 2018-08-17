@@ -5,6 +5,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.junit.Test;
 import pojo.Book;
 import pojo.User;
 import dao.BookDao;
@@ -67,4 +68,19 @@ public class TestSearchAndUpdate
 		long endTime = System.currentTimeMillis();
 		System.out.printf("total ms: %d\n", endTime - startTime);
 	}
+
+
+
+
+	/**
+	 *insert
+	 * @throws Exception
+	 */
+	@Test
+	public  void testSelect() throws Exception {
+
+	}
+
+
+
 }
