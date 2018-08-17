@@ -9,4 +9,6 @@ package com.github.basic.session;
  */
 public interface SessionFactory {
     Session openSession();
+
+    VSessionFactory getFactoryInstance(String resource);
 }

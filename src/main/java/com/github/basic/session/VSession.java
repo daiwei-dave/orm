@@ -47,4 +47,27 @@ public class VSession implements Session {
 		return MapperProxy.newInstance(clazz, this);
 	}
 
+
+	@Override
+	public void rollback() {
+		try {
+			conn.rollback();
+		} catch (SQLException e) {
+			System.err.println(e);
+		}
+	}
+
+	@Override
+	public void commit() {
+		if (conn == null)
+			return;
+		try {
+			conn.commit(); // 事务提交
+			conn.close();
+		} catch (SQLException e) {
+			System.err.println(e);
+		}
+	}
+
+
 }

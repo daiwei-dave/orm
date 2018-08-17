@@ -23,4 +23,10 @@ public interface Session {
      * @return
      */
     public <T> T getMapper(Class<T> clazz);
+
+
+    public void rollback();
+
+
+    void commit();
 }

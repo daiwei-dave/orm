@@ -3,6 +3,8 @@ package com.github;
 
 import com.github.basic.VDataSource;
 import com.github.basic.dao.Dao;
+import com.github.basic.dao.UserDao;
+import com.github.basic.pojo.User;
 import com.github.basic.session.Session;
 import com.github.basic.session.SessionFactory;
 import com.github.basic.session.VSession;
@@ -38,6 +40,31 @@ public class MyTest1 {
         Session session = factory.openSession();
         Dao dao = session.getMapper(Dao.class);
         dao.findById(8);
+    }
+
+
+
+
+    /**
+     *insert
+     * @throws Exception
+     */
+    @Test
+    public  void testInsert() throws Exception {
+        VSessionFactory vSessionFactory=new VSessionFactory();
+        VSessionFactory factory = vSessionFactory.getFactoryInstance("config.xml");
+        VSession session = factory.openSession();
+        try {
+            UserDao dao =  session.getMapper(UserDao.class);
+            User user = new User();
+            user.setName("test");
+            user.setPassword("password");
+            user.setEmail("test@verso.com");
+            dao.insert(user);
+            session.commit();
+        } catch (Exception e) {
+            session.rollback();
+        }
     }
 
 
