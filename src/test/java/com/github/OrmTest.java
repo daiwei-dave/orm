@@ -29,6 +29,9 @@ public class OrmTest {
         Dao dao = sqlSession.getMapper(Dao.class);
         Task task = dao.findById(8);
         System.out.println(task.toString());
+
+        Task task2 = dao.findById(9);
+        System.out.println(task2.toString());
     }
 
 
