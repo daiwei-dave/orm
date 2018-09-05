@@ -6,10 +6,12 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="orm-framework" />
         <module name="verso" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="orm-framework" target="1.8" />
       <module name="verso" target="1.8" />
     </bytecodeTargetLevel>
   </component>

@@ -79,6 +79,7 @@ public class TestInsert
 		System.out.printf("total ms: %d\n", endTime - startTime);
 	}
 
+
 	/**
 	 *insert
 	 * @throws Exception
@@ -102,6 +103,28 @@ public class TestInsert
 			user2.setPassword("password123456");
 			user2.setEmail("test@verso.com");
 			dao.insert(user2);
+			session.finish();
+		} catch (Throwable e) {
+			e.printStackTrace();
+			session.rollback();
+		}
+	}
+
+	/**
+	 *insert
+	 * @throws Exception
+	 */
+	@Test
+	public  void testInsertCommit() throws Exception {
+		VSession session = factory.openSession();
+		try {
+			UserDao dao = (UserDao) session.getBean("userDao");
+
+			User user = new User();
+			user.setName("test");
+			user.setPassword("password");
+			user.setEmail("test@verso.com");
+			dao.insert(user);
 			session.finish();
 		} catch (Throwable e) {
 			e.printStackTrace();

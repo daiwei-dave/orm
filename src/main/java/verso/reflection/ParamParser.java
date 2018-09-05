@@ -19,7 +19,7 @@ public class ParamParser {
 	}
 	
 	/**
-	 * 
+	 * 参数解析
 	 * @param args 计算{param}时，代入的参数
 	 * @return 返回{param}的值
 	 * @throws Exception
@@ -59,13 +59,6 @@ public class ParamParser {
 		// 如果与前次是同一个类，则使用fields的缓存
 		//boolean flag = clazz == arg.getClass();
 		for (; index < levels.length; index++) {
-/*			if (flag) { 
-				if (fields[index] == null) {
-					index--; continue;
-				}
-				arg = fields[index].get(arg);
-			} else {*/
-				// getDeclaredField : can get private field
 				String name = levels[index];
 				Field field = arg.getClass().getDeclaredField(name);
 				if (!field.isAccessible()) {

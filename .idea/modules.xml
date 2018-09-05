@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/verso.iml" filepath="$PROJECT_DIR$/verso.iml" />
+      <module fileurl="file://$PROJECT_DIR$/orm-framework.iml" filepath="$PROJECT_DIR$/orm-framework.iml" />
     </modules>
   </component>
 </project>

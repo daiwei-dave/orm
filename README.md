@@ -13,3 +13,11 @@
  * MappedProxy
  * MappedResult
  * SqlCommandType
+ 
+ 
+ 
+ 
+ 0.0.3
+ 
+ 
+ 插入测试
