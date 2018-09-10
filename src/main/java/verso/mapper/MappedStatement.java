@@ -33,7 +33,12 @@ public class MappedStatement {
 		}
 		return map.get(method);
 	}
-	
+
+	/**
+	 * 参数解析用“？”作占位符
+	 * @param method
+	 * @throws Exception
+	 */
 	private MappedStatement(Method method) throws Exception {
 		Operation anno = method.getAnnotation(Operation.class);
 		returnType = method.getReturnType();
